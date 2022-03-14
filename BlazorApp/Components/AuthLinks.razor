@@ -1,0 +1,23 @@
+﻿@using Blazored.LocalStorage
+@inject ILocalStorageService _localStroge
+<AuthorizeView>
+    <Authorized>
+        Hello,  @email
+        <a href="Logout">Log out</a>
+    </Authorized>
+    <NotAuthorized>
+        <a href="Registration">Register</a>
+        <a href="Login">Log in</a>
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+
+    private string email;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        email = await _localStroge.GetItemAsync<string>("Mail");
+    }
+
+}

@@ -1,0 +1,48 @@
+﻿@page "/CreateCategory"
+@using System.Text
+@using System.Text.Json
+@inject HttpClient Http
+<h2>Kategori Oluştur</h2>
+
+<EditForm Model="_createCategoryDto" OnValidSubmit="Create" class="card card-body bg-light mt-5">
+    <DataAnnotationsValidator />
+    <div class="form-group row">
+        <label for="name" class="col-md-2 col-form-label">Kategori Adı:</label>
+        <div class="col-md-10">
+            <InputText id="name" class="form-control" @bind-Value="_createCategoryDto.CategoryName" />
+            <ValidationMessage For="@(() => _createCategoryDto.CategoryName)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="supplier" class="col-md-2 col-form-label">Kategori Açıklaması:</label>
+        <div class="col-md-10">
+            <InputText id="supplier" class="form-control" @bind-Value="_createCategoryDto.Description" />
+            <ValidationMessage For="@(() => _createCategoryDto.Description)" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-success">Create</button>
+        </div>
+    </div>
+</EditForm>
+<SuccessNotification @ref="_notification" />
+@code {
+    private CreateCategoryDto _createCategoryDto = new CreateCategoryDto();
+    private SuccessNotification _notification;
+    private async Task Create()
+    {
+        var content = JsonSerializer.Serialize(_createCategoryDto);
+        var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+        var registrationResult = await Http.PostAsync("Category", bodyContent);
+        _notification.Show("Category");
+    }
+
+    private class CreateCategoryDto
+    {
+        public string CategoryName { get; set; }
+        public string Description { get; set; }
+    }
+}

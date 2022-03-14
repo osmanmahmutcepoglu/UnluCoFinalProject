@@ -1,0 +1,164 @@
+﻿@page "/CreateProduct"
+@using System.Text
+@using System.Text.Json
+@using UnluCoFinalProject.Domain.Entities
+@inject HttpClient Http
+<h2>Ürün Oluştur</h2>
+
+<EditForm Model="_createProductDto" OnValidSubmit="Create" class="card card-body bg-light mt-5">
+    <DataAnnotationsValidator />
+    <div class="form-group row">
+        <label for="name" class="col-md-2 col-form-label">Ürün Adı:</label>
+        <div class="col-md-10">
+            <InputText id="name" class="form-control" @bind-Value="_createProductDto.ProductName" />
+            <ValidationMessage For="@(() => _createProductDto.ProductName)" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="Description" class="col-md-2 col-form-label">Ürün Açıklaması:</label>
+        <div class="col-md-10">
+            <InputText id="Description" class="form-control" @bind-Value="_createProductDto.Description" />
+            <ValidationMessage For="@(() => _createProductDto.Description)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="price" class="col-md-2 col-form-label">Ürün Açıklaması:</label>
+        <div class="col-md-10">
+            <input id="price" type="number" class="form-control" @bind="_createProductDto.Price" />
+            <ValidationMessage For="@(() => _createProductDto.Price)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Kategori:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind-Value="@_createProductDto.CategoryId" @onchange="GetCategoryId">
+                <option selected value="-1">Lütfen Seçim Yapınız</option>
+                @foreach (var category in categorys)
+                {
+                    <option value="@category.Id.ToString()">@category.CategoryName.ToString()</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Marka:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind-Value="@_createProductDto.BrandId" @onchange="GetBrandId">
+                <option selected value="-1">Lütfen Seçim Yapınız</option>
+                @foreach (var brand in brands)
+                {
+                    <option value="@brand.Id.ToString()">@brand.BrandName.ToString()</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Renk:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind-Value="@_createProductDto.ColorId" @onchange="GetColorId">
+                <option selected value="-1">Lütfen Seçim Yapınız</option>
+                @foreach (var color in colors)
+                {
+                    <option value="@color.Id.ToString()">@color.ColorName.ToString()</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Durum:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind-Value="@_createProductDto.IsSold" @onchange="GetIsSoldId">
+                <option selected value="-1">Lütfen Seçim Yapınız</option>
+                @foreach (var isSold in isSolds)
+                {
+                    <option value="@isSold.Id.ToString()">@isSold.Name.ToString()</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Teklif Durumu:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind-Value="@_createProductDto.IsOfferable" @onchange="GetIsOfferable">
+                <option selected value="-1">Lütfen Seçim Yapınız</option>
+                <option value="1">Aktif</option>
+                <option value="0">Pasif</option>
+
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-success">Create</button>
+        </div>
+    </div>
+</EditForm>
+<SuccessNotification @ref="_notification" />
+@code {
+
+
+    private CreateProductDto _createProductDto = new CreateProductDto();
+    private SuccessNotification _notification;
+    private List<Brand> brands = new List<Brand>();
+    private List<Color> colors = new List<Color>();
+    private List<IsSold> isSolds = new List<IsSold>();
+    private List<Category> categorys = new List<Category>();
+
+
+
+    //Function's
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await Http.GetFromJsonAsync<List<Brand>>("Utility/brand");
+        colors = await Http.GetFromJsonAsync<List<Color>>("Utility/color");
+        isSolds = await Http.GetFromJsonAsync<List<IsSold>>("Utility/issold");
+        categorys = await Http.GetFromJsonAsync<List<Category>>("Category");
+    }
+
+    private async Task Create()
+    {
+        var content = JsonSerializer.Serialize(_createProductDto);
+        var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+        var registrationResult = await Http.PostAsync("Product", bodyContent);
+        _notification.Show("Products");
+    }
+
+    private void GetCategoryId(ChangeEventArgs e)
+    {
+        _createProductDto.CategoryId = Convert.ToInt32(e.Value);
+    }
+    private void GetBrandId(ChangeEventArgs e)
+    {
+        _createProductDto.BrandId = Convert.ToInt32(e.Value);
+    }
+    private void GetColorId(ChangeEventArgs e)
+    {
+        _createProductDto.ColorId = Convert.ToInt32(e.Value);
+    }
+    private void GetIsSoldId(ChangeEventArgs e)
+    {
+        _createProductDto.IsSold = e.Value.ToString();
+    }
+    private void GetIsOfferable(ChangeEventArgs e)
+    {
+        _createProductDto.IsOfferable = e.Value.ToString() == "1" ? true : false;
+    }
+
+    //DTO's
+    private class CreateProductDto
+    {
+        public string ProductName { get; set; }
+        public string Description { get; set; }
+        public int CategoryId { get; set; }
+        public int ColorId { get; set; }
+        public int BrandId { get; set; }
+        public int Price { get; set; }
+        public string IsSold { get; set; }
+        public string ImagePath { get; set; }
+        public bool IsOfferable { get; set; }
+    }
+}

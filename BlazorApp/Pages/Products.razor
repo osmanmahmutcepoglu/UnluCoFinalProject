@@ -1,0 +1,51 @@
+﻿@page "/Products"
+@using UnluCoFinalProject.Domain.Entities
+@inject HttpClient Http
+@inject NavigationManager NavManager
+
+
+<h1>Ürünler</h1>
+<p style="color:red;">Güncellemek istediğiniz ürünü üzerine tıklayınız.</p>
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (products.Count == 0)
+{
+    <p><em>Veritabanında ürün mevcut değil lütfen ürün ekleyiniz...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ürün Adı</th>
+                <th>Ürün Açıklaması</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr @onclick="@(() => UpdatePage(@product.Id))">
+                    <td>@product.ProductName</td>
+                    <td>@product.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Product> products;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        products = await Http.GetFromJsonAsync<List<Product>>("Product");
+    }
+    protected void UpdatePage(int id)
+    {
+
+        NavManager.NavigateTo("UpdateProduct/" + id.ToString());
+    }
+}

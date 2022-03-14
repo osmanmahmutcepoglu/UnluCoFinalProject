@@ -1,0 +1,89 @@
+﻿@page "/UpdateCategory"
+@using System.Text.Json
+@using System.Text
+@using UnluCoFinalProject.Domain.Entities
+@inject HttpClient Http
+@inject NavigationManager NavManager
+
+
+<h1>Kategori Güncelle</h1>
+
+@if (categorys == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="_updateCategoryDto" OnValidSubmit="Update" class="card card-body bg-light mt-5">
+        <DataAnnotationsValidator />
+        <div class="form-group row">
+            <label for="id" class="col-md-2 col-form-label">Kategoriler:</label>
+            <div class="col-md-10">
+                <Select id="id" class="form-control" bind-Value="@_updateCategoryDto.Id" @onchange="GetCategory">
+                    @foreach (var category in categorys)
+                    {
+                        <option value="@category.Id">@category.CategoryName</option>
+                    }
+                </Select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="supplier" class="col-md-2 col-form-label">Kategori Adı:</label>
+            <div class="col-md-10">
+                <InputText id="supplier" class="form-control" @oninput="@((e) => { _updateCategoryDto.CategoryName=(string)e.Value;})" @bind-Value="_updateCategoryDto.CategoryName" />
+                <ValidationMessage For="@(() => _updateCategoryDto.Description)" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="supplier" class="col-md-2 col-form-label">Kategori Açıklaması:</label>
+            <div class="col-md-10">
+                <InputText id="supplier" class="form-control" @oninput="@((e) => { _updateCategoryDto.Description=(string)e.Value;})" @bind-Value="_updateCategoryDto.Description" />
+                <ValidationMessage For="@(() => _updateCategoryDto.Description)" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-success">Update</button>
+            </div>
+        </div>
+    </EditForm>
+    <SuccessNotification @ref="_notification" />
+}
+
+@code {
+    private List<Category> categorys;
+    private UpdateCategoryDto _updateCategoryDto = new UpdateCategoryDto();
+    private SuccessNotification _notification;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorys = await Http.GetFromJsonAsync<List<Category>>("Category");
+    }
+
+    private void GetCategory(ChangeEventArgs e)
+    {
+        var select = categorys.SingleOrDefault(x => x.Id.ToString() == e.Value.ToString());
+        _updateCategoryDto.Id = select.Id;
+        _updateCategoryDto.CategoryName = select.CategoryName;
+        _updateCategoryDto.Description = select.Description;
+    }
+
+    private async Task Update()
+    {
+        var content = JsonSerializer.Serialize(_updateCategoryDto);
+        var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+        string uri = "Category/" + _updateCategoryDto.Id.ToString();
+        var registrationResult = await Http.PutAsync(uri, bodyContent);
+        _notification.Show("Category");
+    }
+
+    private class UpdateCategoryDto
+    {
+        public int Id { get; set; }
+        public string CategoryName { get; set; }
+        public string Description { get; set; }
+    }
+}

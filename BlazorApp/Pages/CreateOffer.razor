@@ -1,0 +1,95 @@
+﻿@page "/CreateOffer"
+@using System.Text.Json
+@using System.Text
+@using System.Net.Http.Headers
+@using UnluCoFinalProject.Domain.Entities
+@inject HttpClient Http
+@inject NavigationManager NavManager
+
+
+<h1>Teklif Verilebilecek Ürünler</h1>
+<p style="color:red;">Teklif vermek istediğiniz ürünü üzerine tıklayınız.</p>
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (products.Count == 0)
+{
+    <p><em>Veritabanında ürün mevcut değil lütfen ürün ekleyiniz...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ürün Adı</th>
+                <th>Ürün Açıklaması</th>
+                <th>Teklif</th>
+                <th>Fiyat Teklifi</th>
+                <th>Oran Teklifi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.ProductName</td>
+                    <td>@product.Description</td>
+                    <td> <input type="number" @oninput="@((e) => {  OfferAddList(Convert.ToInt32(e.Value),product.Id);})" /> </td>
+                    <td> <input type="button" value="Fiyat Teklifi" @onclick="@(() => OfferPrice(@product.Id))" /> </td>
+                    <td> <input type="button" value="Oran Teklifi" @onclick="@(() => OfferRate(@product.Id))" /> </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Product> products;
+    private List<Offer> offers = new List<Offer>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await Http.GetFromJsonAsync<List<Product>>("Product");
+        foreach (var offer in products)
+        {
+            offers.Add(new Offer { ProductId = offer.Id, ProductPrice = offer.Price });
+        }
+    }
+
+    protected void OfferAddList(int id, int offer)
+    {
+        offers.Where(x => x.ProductId == id).Select(c => { c.OfferValue = offer; return c; }).ToList();
+    }
+
+    protected async void OfferPrice(int id)
+    {
+        var offer = offers.Where(x => x.ProductId == id).SingleOrDefault();
+        var form = new MultipartFormDataContent();
+        form.Add(new StringContent(offer.ProductId.ToString()), "productId");
+        form.Add(new StringContent(offer.OfferValue.ToString()), "offerPrice");
+        var offerResult = await Http.PostAsync("Offer", form);
+    }
+        protected async void OfferRate(int id)
+    {
+        var offer = offers.Where(x => x.ProductId == id).SingleOrDefault();
+        var form = new MultipartFormDataContent();
+        form.Add(new StringContent(offer.ProductId.ToString()), "productId");
+        form.Add(new StringContent(offer.OfferValue.ToString()), "offerPrice");
+        var offerResult = await Http.PostAsync("Offer/rate", form);
+    }
+
+    public class Offer
+    {
+        public int ProductId { get; set; }
+        public int ProductPrice { get; set; }
+        public int OfferValue { get; set; }
+
+    }
+    public class OfferDto
+    {
+        public int productId { get; set; }
+        public int offerPrice { get; set; }
+    }
+
+}

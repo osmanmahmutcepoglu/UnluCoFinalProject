@@ -1,0 +1,42 @@
+﻿@page "/Category"
+@using UnluCoFinalProject.Domain.Entities
+@inject HttpClient Http
+@inject NavigationManager NavManager
+
+
+<h1>Kategoriler</h1>
+
+@if (categorys == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Kategori Adı</th>
+                <th>Kategori Açıklaması</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in categorys)
+            {
+                <tr>
+                    <td>@category.CategoryName</td>
+                    <td>@category.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Category> categorys;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        categorys = await Http.GetFromJsonAsync<List<Category>>("Category");
+    }
+}

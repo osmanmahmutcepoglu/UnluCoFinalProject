@@ -1,0 +1,40 @@
+﻿@page "/Offer/MyOffers"
+
+
+@using UnluCoFinalProject.Domain.Entities
+@inject HttpClient Http
+@inject NavigationManager NavManager
+
+
+<h1>Verdiğim Teklifler</h1>
+
+@if (myOffers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (myOffers == 0)
+{
+    <p><em>Veritabanında teklifiniz mevcut değil lütfen ürün ekleyiniz...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ürün Adı</th>
+                <th>Ürün Açıklaması</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+}
+
+@code {
+    public int myOffers = 0;
+    ///api/Offer/MyOffers
+
+}
+
+

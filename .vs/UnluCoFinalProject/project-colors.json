@@ -1,0 +1,81 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "d98b15cc-c9b5-47bd-92c7-a8798fb3765e": {
+      "ProjectGuid": "d98b15cc-c9b5-47bd-92c7-a8798fb3765e",
+      "DisplayName": "UnluCoFinalProject",
+      "ColorIndex": 0
+    },
+    "54e92f1d-0859-45b5-bd9c-fb6f30da3785": {
+      "ProjectGuid": "54e92f1d-0859-45b5-bd9c-fb6f30da3785",
+      "DisplayName": "UnluCoFinalProject.Service",
+      "ColorIndex": 1
+    },
+    "d3e3b4eb-ff30-47af-962a-d38a82d52128": {
+      "ProjectGuid": "d3e3b4eb-ff30-47af-962a-d38a82d52128",
+      "DisplayName": "UnluCoFinalProject.Domain",
+      "ColorIndex": 2
+    },
+    "9e88e3fe-457f-43fe-baca-d060f837a358": {
+      "ProjectGuid": "9e88e3fe-457f-43fe-baca-d060f837a358",
+      "DisplayName": "UnluCoFinalProject.Persistence",
+      "ColorIndex": 3
+    },
+    "a2eb5721-abbb-414b-929d-5cc2ad0de2b7": {
+      "ProjectGuid": "a2eb5721-abbb-414b-929d-5cc2ad0de2b7",
+      "DisplayName": "UnluCoFinalProject.Infrastructure",
+      "ColorIndex": 4
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "9595dd22-ee90-4b71-80db-19d65a2c7f53": {
+      "ProjectGuid": "9595dd22-ee90-4b71-80db-19d65a2c7f53",
+      "DisplayName": "UnluCoFinalProject.Test.Integration",
+      "ColorIndex": 5
+    },
+    "42a8d02c-4de3-433c-913d-5fc540dcaec2": {
+      "ProjectGuid": "42a8d02c-4de3-433c-913d-5fc540dcaec2",
+      "DisplayName": "UnluCoFinalProject.Test.Unit",
+      "ColorIndex": 6
+    },
+    "cb947d1f-604c-4f9b-8565-158f3566d5f6": {
+      "ProjectGuid": "cb947d1f-604c-4f9b-8565-158f3566d5f6",
+      "DisplayName": "BlazorApp1",
+      "ColorIndex": 7
+    },
+    "6f8c5827-fc24-4475-83de-4076b7d19adb": {
+      "ProjectGuid": "6f8c5827-fc24-4475-83de-4076b7d19adb",
+      "DisplayName": "BlazorApp1",
+      "ColorIndex": 8
+    },
+    "0379a4cd-32b4-4ca7-92fa-021bc3dec1e6": {
+      "ProjectGuid": "0379a4cd-32b4-4ca7-92fa-021bc3dec1e6",
+      "DisplayName": "BlazorApp",
+      "ColorIndex": 9
+    },
+    "c86af70b-559c-455c-b9d1-4070713aa318": {
+      "ProjectGuid": "c86af70b-559c-455c-b9d1-4070713aa318",
+      "DisplayName": "BlazorApp",
+      "ColorIndex": 10
+    },
+    "0c073765-e380-40a0-9b7e-42d1ec2c0de7": {
+      "ProjectGuid": "0c073765-e380-40a0-9b7e-42d1ec2c0de7",
+      "DisplayName": "BlazorApp",
+      "ColorIndex": 11
+    },
+    "37e7dac9-3ad2-48dd-87d5-9deaa047d4a5": {
+      "ProjectGuid": "37e7dac9-3ad2-48dd-87d5-9deaa047d4a5",
+      "DisplayName": "BlazorApp",
+      "ColorIndex": 12
+    },
+    "919fd655-f067-4ba2-b932-d926e85dd6b4": {
+      "ProjectGuid": "919fd655-f067-4ba2-b932-d926e85dd6b4",
+      "DisplayName": "Script Documents",
+      "ColorIndex": 13
+    }
+  },
+  "NextColorIndex": 14
+}

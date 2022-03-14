@@ -1,0 +1,202 @@
+﻿@page "/UpdateProduct/{updateProductId}"
+@using System.Text
+@using System.Text.Json
+@using UnluCoFinalProject.Domain.Entities
+@inject HttpClient Http
+@inject NavigationManager NavigationHelper
+@using Microsoft.AspNetCore.WebUtilities
+
+<h2>Ürün Güncelle</h2>
+
+<EditForm Model="_updateProductDto" OnValidSubmit="Update" class="card card-body bg-light mt-5">
+    <DataAnnotationsValidator />
+    <div class="form-group row">
+        <label for="name" class="col-md-2 col-form-label">Ürün Adı:</label>
+        <div class="col-md-10">
+            <InputText id="name" class="form-control" @bind-Value="_updateProductDto.ProductName" />
+            <ValidationMessage For="@(() => _updateProductDto.ProductName)" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="Description" class="col-md-2 col-form-label">Ürün Açıklaması:</label>
+        <div class="col-md-10">
+            <InputText id="Description" class="form-control" @bind-Value="_updateProductDto.Description" />
+            <ValidationMessage For="@(() => _updateProductDto.Description)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="price" class="col-md-2 col-form-label">Ürün Açıklaması:</label>
+        <div class="col-md-10">
+            <input id="price" type="number" class="form-control" @bind="_updateProductDto.Price" />
+            <ValidationMessage For="@(() => _updateProductDto.Price)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Kategori:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind="@_updateProductDto.CategoryId" @onchange="GetCategoryId">
+                @foreach (var category in categorys)
+                {
+                    if (category.Id.ToString() == _updateProductDto.CategoryId.ToString())
+                    {
+                        <option value="@category.Id.ToString()" selected>@category.CategoryName.ToString()</option>
+                    }
+                    else
+                    {
+                        <option value="@category.Id.ToString()">@category.CategoryName.ToString()</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Marka:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind-Value="@_updateProductDto.BrandId" @onchange="GetBrandId">
+                @foreach (var brand in brands)
+                {
+
+                    if (brand.Id.ToString() == _updateProductDto.BrandId.ToString())
+                    {
+                        <option value="@brand.Id.ToString()" selected>@brand.BrandName.ToString()</option>
+                    }
+                    else
+                    {
+                        <option value="@brand.Id.ToString()">@brand.BrandName.ToString()</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Renk:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind-Value="@_updateProductDto.ColorId" @onchange="GetColorId">
+                @foreach (var color in colors)
+                {
+                    if (color.Id.ToString() == _updateProductDto.ColorId.ToString())
+                    {
+                        <option value="@color.Id.ToString()" selected>@color.ColorName.ToString()</option>
+                    }
+                    else
+                    {
+                        <option value="@color.Id.ToString()">@color.ColorName.ToString()</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Durum:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind-Value="@_updateProductDto.IsSold" @onchange="GetIsSoldId">
+                @foreach (var isSold in isSolds)
+                {
+                    if (isSold.Id.ToString() == _updateProductDto.IsSold.ToString())
+                    {
+                        <option value="@isSold.Id.ToString()" selected>@isSold.Name.ToString()</option>
+                    }
+                    else
+                    {
+                        <option value="@isSold.Id.ToString()">@isSold.Name.ToString()</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="id" class="col-md-2 col-form-label">Teklif Durumu:</label>
+        <div class="col-md-10">
+            <select id="id" class="form-control" bind-Value="@_updateProductDto.IsOfferable" @onchange="GetIsOfferable">
+                @if(_updateProductDto.IsOfferable == true){
+                <option value="1" selected>Aktif</option>
+                <option value="0">Pasif</option>
+                }else {
+                <option value="1">Aktif</option>
+                <option value="0" selected>Pasif</option>
+                }
+
+
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-success">Update</button>
+        </div>
+    </div>
+</EditForm>
+<SuccessNotification @ref="_notification" />
+@code {
+
+
+    private UpdateProductDto _updateProductDto = new UpdateProductDto();
+    private SuccessNotification _notification;
+    private List<Brand> brands = new List<Brand>();
+    private List<Color> colors = new List<Color>();
+    private List<IsSold> isSolds = new List<IsSold>();
+    private List<Category> categorys = new List<Category>();
+    [Parameter]
+    public string updateProductId { get; set; }
+
+
+    //Function's
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await Http.GetFromJsonAsync<List<Brand>>("Utility/brand");
+        colors = await Http.GetFromJsonAsync<List<Color>>("Utility/color");
+        isSolds = await Http.GetFromJsonAsync<List<IsSold>>("Utility/issold");
+        categorys = await Http.GetFromJsonAsync<List<Category>>("Category");
+        _updateProductDto = await Http.GetFromJsonAsync<UpdateProductDto>("Product/" + updateProductId);
+    }
+
+    private async Task Update()
+    {
+
+        var content = JsonSerializer.Serialize(_updateProductDto);
+        var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+        var registrationResult = await Http.PutAsync("Product/" + updateProductId, bodyContent);
+        _notification.Show("Products");
+    }
+
+    private void GetCategoryId(ChangeEventArgs e)
+    {
+        _updateProductDto.CategoryId = Convert.ToInt32(e.Value);
+    }
+    private void GetBrandId(ChangeEventArgs e)
+    {
+        _updateProductDto.BrandId = Convert.ToInt32(e.Value);
+    }
+    private void GetColorId(ChangeEventArgs e)
+    {
+        _updateProductDto.ColorId = Convert.ToInt32(e.Value);
+    }
+    private void GetIsSoldId(ChangeEventArgs e)
+    {
+        _updateProductDto.IsSold = e.Value.ToString();
+    }
+
+    private void GetIsOfferable(ChangeEventArgs e)
+    {
+        _updateProductDto.IsOfferable = e.Value.ToString() == "1" ? true : false;
+    }
+
+    //DTO's
+    private class UpdateProductDto
+    {
+        public int Id { get; set; }
+        public string ProductName { get; set; }
+        public string Description { get; set; }
+        public int CategoryId { get; set; }
+        public int ColorId { get; set; }
+        public int BrandId { get; set; }
+        public int Price { get; set; }
+        public string IsSold { get; set; }
+        public string ImagePath { get; set; }
+        public bool IsOfferable { get; set; }
+    }
+}
