@@ -1,5 +1,5 @@
 # UnluCoFinalProject
-Teknolojiler: .Net Core 5.0, Blazor, MsSql
+# Teknolojiler: .Net Core 5.0, Blazor, MsSql
 
 
 Appsetting.Json dosyasından Veritabanı bağlatı stringlerini ayarlıyoruz. 
